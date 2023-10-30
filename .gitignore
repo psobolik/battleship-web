@@ -10,5 +10,18 @@
 !.yarn/cache
 #.pnp.*
 
-# Since this is a TypeScript app, we don't store the generated JavaScript files
-site/js
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

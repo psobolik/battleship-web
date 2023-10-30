@@ -1,0 +1,2 @@
+# Since this is a TypeScript app, we don't store the generated JavaScript files
+/js/

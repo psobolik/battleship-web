@@ -1,7 +1,22 @@
 {
-  "name": "Battleship",
-  "packageManager": "yarn@3.6.1",
+  "name": "battleship",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "author": { "name": "Paul Sobolik", "email": "psobolik@zoho.com" },
+  "description": "A non-competetive version of the old Battleship game",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "packageManager": "yarn@4.0.1",
   "devDependencies": {
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
+  },
+  "installConfig": {
+    "pnp": true
   }
 }

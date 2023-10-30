@@ -12,7 +12,6 @@ body {
     font-family: sans-serif;
     height: 100%;
     width: 100%;
-    /*background-image: linear-gradient(rgb(51, 68, 153) 20%, rgb(255, 255, 255));*/
     background-image: linear-gradient(rgb(189, 203, 255) 60%, rgb(51, 68, 153));
     font-size: 14pt;
 }
