@@ -3,7 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "author": { "name": "Paul Sobolik", "email": "psobolik@zoho.com" },
+  "author": {
+    "name": "Paul Sobolik",
+    "email": "psobolik@zoho.com"
+  },
   "description": "A non-competetive version of the old Battleship game",
   "license": "MIT",
   "scripts": {
