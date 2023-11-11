@@ -83,7 +83,7 @@ function showField() {
     element.classList.add("cell");
     container.appendChild(element);
   }
-
+  
   const missChar = '️✖';
   const hitChar = '💥';
   const container = document.getElementById('field-container') as HTMLElement;
@@ -91,7 +91,7 @@ function showField() {
   for (let row = 0; row < g_battleshipEngine.numRows; ++row) {
     for (let col = 0; col < g_battleshipEngine.numColumns; ++col) {
       const c = g_battleshipEngine.field[row][col];
-      if (c === BattleshipEngine.openChar || !Helpers.isUpperCase(c)) {
+      if (c === BattleshipEngine.openChar || (!Helpers.isUpperCase(c) && c !== BattleshipEngine.missChar)) {
         showTarget(row, col, container);
       } else {
         showHitOrMiss(Helpers.isUpperCase(c) ? hitChar : missChar, row, col, container);
