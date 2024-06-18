@@ -101,6 +101,14 @@ body {
     font-size: 48pt;
 }
 
+#win.no-win {
+    display: none;
+}
+
+#win.win {
+    display: block;
+}
+
 .sunk {
     color: rgb(58, 58, 140);
     text-decoration: line-through;

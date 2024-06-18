@@ -9,15 +9,13 @@ export class GameStatus {
 
   // This constructor allows us to create a pristine BattleshipEngine or one using data from a saved instance.
   constructor(ships: Ship[], data: GameStatus | undefined = undefined) {
-    ships.forEach((ship) =>
-      this.shipStatuses.push(new ShipStatus(ship.name, ship.char, ship.size))
-    );
+    this.shipStatuses= ships.map(ship => new ShipStatus(ship.name, ship.char, ship.size));
     if (data) {
       this.shots = data.shots;
       this.hits = data.shots;
       this.misses = data.misses;
       this.shipStatuses.forEach((shipStatus) => {
-        const dataShipStatus = data.shipStatuses.find((ss) =>
+        const dataShipStatus = data.shipStatuses.find(ss =>
           ss.char === shipStatus.char
         );
         if (dataShipStatus) shipStatus.hits = dataShipStatus.hits;
@@ -39,6 +37,12 @@ export class GameStatus {
       return shipHit;
     }
   };
+
+  public sortShipStatuses = () => {
+    this.shipStatuses.sort((a, b) =>
+      a.size === b.size ? a.name.localeCompare(b.name) : a.size - b.size
+    );
+  }
 
   get anyAfloat(): boolean {
     return this.shipStatuses.some((ship) => ship.isAfloat);

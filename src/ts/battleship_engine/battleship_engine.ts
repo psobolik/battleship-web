@@ -12,6 +12,8 @@ enum Direction {
 export class InvalidArgumentError extends Error {
   constructor() {
     super("Invalid Arguments");
+    this.name = "InvalidArgumentError";
+    this.stack = new Error().stack;
   }
 }
 

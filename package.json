@@ -7,7 +7,7 @@
     "name": "Paul Sobolik",
     "email": "psobolik@zoho.com"
   },
-  "description": "A non-competetive version of the old Battleship game",
+  "description": "A non-competitive version of the old Battleship game",
   "license": "MIT",
   "scripts": {
     "dev": "vite",

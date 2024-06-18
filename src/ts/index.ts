@@ -1,64 +1,81 @@
-import {BattleshipEngine} from "./battleship_engine/battleship_engine.js";
-import {Helpers} from "./battleship_engine/helpers.js";
-import {ShipStatus} from "./battleship_engine/ship_status";
+import { BattleshipEngine } from "./battleship_engine/battleship_engine.js";
+import { Helpers } from "./battleship_engine/helpers.js";
+import { ShipStatus } from "./battleship_engine/ship_status";
 
 let g_battleshipEngine: BattleshipEngine;
+const g_notifyElement = document.querySelector('#notify') as HTMLElement;
+const g_winElement = document.querySelector('#win') as HTMLElement;
+const g_fieldContainer = document.querySelector('#field-container') as HTMLElement;
 
 // Hide the notification div when it's done animating
-(document.getElementById('notify') as HTMLElement)
-  .addEventListener('animationend', _evt => {
-    ((document.getElementById('notify') as HTMLElement))
-      .classList.remove('notify-animate');
-  });
+g_notifyElement.addEventListener('animationend', handleNotifyAnimationEnd);
 
 // Hide the "you win" div and reset the game when it is clicked
-(document.getElementById('win') as HTMLElement)
-  .addEventListener('click', _evt => {
-    (document.getElementById('win') as HTMLElement)
-      .style.display = 'none';
-    reset();
-  })
+g_winElement.addEventListener('click', event => { handleWinElementClick(event) });
+
+// Respond to clicks in the field
+g_fieldContainer.addEventListener('click', handleFieldClick);
 
 window.addEventListener('load', () => {
   // Kick things off...
   reset();
 })
 
+function handleNotifyAnimationEnd() {
+  g_notifyElement.classList.remove('notify-animate');
+}
+
+function handleWinElementClick(event: MouseEvent) {
+  event.preventDefault();
+  reset();
+}
+
 function reset() {
   g_battleshipEngine = new BattleshipEngine(10, 10);
-  g_battleshipEngine.status.shipStatuses.sort((a, b) =>
-    a.size === b.size ? a.name.localeCompare(b.name) : a.size - b.size
-  );
+  g_battleshipEngine.status.sortShipStatuses();
+  setWinState(false);
   redraw();
 }
 
 function removeElementsByName(container: HTMLElement, name: string) {
-  // let elements = container.getElementsByClassName(name) as HTMLCollectionOf<HTMLElement>;
-  for (const element of Array.from(container.getElementsByClassName(name) as HTMLCollectionOf<HTMLElement>)) {
+  [...container.getElementsByClassName(name)].forEach(element => {
     container.removeChild(element);
-  }
+  })
 }
 
 function handleShot(row: number, col: number) {
-  const notify = document.getElementById('notify') as HTMLElement;
-  if (notify.classList.contains('notify-animate'))
+  if (g_notifyElement.classList.contains('notify-animate'))
     return; // Don't allow another shot until the notification is complete
 
   const shipStatus = g_battleshipEngine.takeShot(row, col);
-  if (shipStatus) {
-    notify.textContent = `${shipStatus.name.toUpperCase()} ${(shipStatus.isAfloat ? "HIT!" : "SUNK!")}`;
-    notify.classList.add('notify-animate');
-
-    if (!g_battleshipEngine.status.anyAfloat) {
-      const win = document.getElementById('win') as HTMLElement;
-      win.style.display = 'block';
-    }
-  }
+  if (shipStatus) updateUi(shipStatus);
   redraw();
 }
 
+function setWinState(flag: boolean) {
+  g_winElement.classList.toggle('win', flag);
+  g_winElement.classList.toggle('no-win', !flag);
+}
+
+function updateUi(shipStatus: ShipStatus) {
+  g_notifyElement.textContent = `${shipStatus.name.toUpperCase()} ${(shipStatus.isAfloat ? "HIT!" : "SUNK!")}`;
+  g_notifyElement.classList.add('notify-animate');
+
+  if (!g_battleshipEngine.status.anyAfloat) {
+    setWinState(true);
+  }
+}
+
+function handleFieldClick(event: MouseEvent) {
+    const target = event.target as HTMLInputElement;
+    if (target.type === 'button') {
+      handleShot(Number(target.dataset.row), Number(target.dataset.col));
+      console.log(target);
+    }
+}
+
 function showField() {
-  function showTarget(row: number, col: number, container: HTMLElement) {
+  function createTarget(row: number, col: number): HTMLElement {
     // console.log(`${row},${col}: open`);
     const button = document.createElement('input') as HTMLInputElement;
     button.value = '⬜';
@@ -68,33 +85,28 @@ function showField() {
     button.classList.add("cell");
     button.dataset.row = row.toString();
     button.dataset.col = col.toString();
-    button.addEventListener('click', ev => {
-      const target = ev.target as HTMLInputElement;
-      handleShot(Number(target.dataset.row), Number(target.dataset.col));
-    })
-    container.appendChild(button);
+    return button;
   }
 
-  function showHitOrMiss(char: string, row: number, col: number, container: HTMLElement) {
+  function createHitOrMiss(char: string, row: number, col: number): HTMLElement {
     const element = document.createElement('span');
     element.textContent = char;
     element.style.gridColumn = (col + 1).toString();
     element.style.gridRow = (row + 1).toString();
     element.classList.add("cell");
-    container.appendChild(element);
+    return element;
   }
-  
+
   const missChar = '️✖';
   const hitChar = '💥';
-  const container = document.getElementById('field-container') as HTMLElement;
-  removeElementsByName(container, 'cell');
+  removeElementsByName(g_fieldContainer, 'cell');
   for (let row = 0; row < g_battleshipEngine.numRows; ++row) {
     for (let col = 0; col < g_battleshipEngine.numColumns; ++col) {
       const c = g_battleshipEngine.field[row][col];
       if (c === BattleshipEngine.openChar || (!Helpers.isUpperCase(c) && c !== BattleshipEngine.missChar)) {
-        showTarget(row, col, container);
+        g_fieldContainer.appendChild(createTarget(row, col));
       } else {
-        showHitOrMiss(Helpers.isUpperCase(c) ? hitChar : missChar, row, col, container);
+        g_fieldContainer.appendChild(createHitOrMiss(Helpers.isUpperCase(c) ? hitChar : missChar, row, col));
       }
     }
   }
