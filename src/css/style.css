@@ -82,7 +82,8 @@ body {
 #status-container {
   display: inline-grid;
   text-align: start;
-  grid-template-columns: repeat(2, 1fr);
+  column-gap: 0.5em;
+  grid-template-columns: 2fr 1fr 1fr;
   grid-template-rows: repeat(8, 1fr);
   /*margin-left: 2em;*/
   padding: .5em 1em;
@@ -94,6 +95,10 @@ body {
 
   & hr {
     height: 1px;
+  }
+
+  & img {
+    width: 48pt;
   }
 }
 

@@ -9,7 +9,7 @@ export class GameStatus {
 
   // This constructor allows us to create a pristine BattleshipEngine or one using data from a saved instance.
   constructor(ships: Ship[], data: GameStatus | undefined = undefined) {
-    this.shipStatuses= ships.map(ship => new ShipStatus(ship.name, ship.char, ship.size));
+    this.shipStatuses = ships.map(ship => new ShipStatus(ship.name, ship.char, ship.size));
     if (data) {
       this.shots = data.shots;
       this.hits = data.shots;

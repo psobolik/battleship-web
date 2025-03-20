@@ -1,16 +1,17 @@
-# Setup:
-```bash
+# Install
+```shell
 $ pnpm install
 ```
-# Build:
-```bash
+# Build & deploy
+## pop-os
+```shell
 $ pnpm build
+$ sudo rsync --recursive --mkpath --delete ./dist/battleship/ /var/www/html/battleship/
 ```
-# Deploy:
-```bash
-# Optional; make a backup of the deployed files
-$ zip -r backup.zip /var/www/html/battleship/*
-# This is not necessary the first time
-$ sudo rm /var/www/html/battleship/assets/*
-$ sudo rsync --recursive --mkpath ./dist/battleship/ /var/www/html/battleship/
+# tilde.team
+
+```shell
+$ pnpm build --base=/~padeso/battleship --outDir=dist/tilde.team
+$ rsync --recursive --mkpath --delete ./dist/tilde.team/ tilde.team:~/public_html/battleship/
 ```
+

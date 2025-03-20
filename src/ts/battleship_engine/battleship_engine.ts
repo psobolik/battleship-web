@@ -97,39 +97,41 @@ export class BattleshipEngine {
       throw new InvalidArgumentError();
     }
 
-    const shipWillFit = (
-      start: Position,
-      direction: Direction,
-      ship: Ship,
-    ): boolean => {
-      if (direction === Direction.HORIZONTAL) {
-        if (start.col + ship.size >= this.numColumns) return false;
-        for (let col = 0; col < ship.size; ++col) {
-          if (!this.isCellFree(new Position(start.row, start.col + col))) {
-            return false;
+      const shipWillFit = (
+          start: Position,
+          direction: Direction,
+          ship: Ship,
+      ): boolean => {
+          if (direction === Direction.HORIZONTAL) {
+              var colLimit = start.col + ship.size;
+              for (let col = start.col; col < colLimit; ++col) {
+                  if (!this.isCellFree(new Position(start.row, col))) {
+                      return false;
+                  }
+              }
+          } else { // (direction === Direction.VERTICAL)
+              var rowLimit = start.row + ship.size;
+              for (let row = start.row; row < rowLimit; ++row) {
+                  if (!this.isCellFree(new Position(row, start.col))) {
+                      return false;
+                  }
+              }
           }
-        }
-      } else { // (direction === Direction.VERTICAL)
-        if (start.row + ship.size >= this.numRows) return false;
-        for (let row = 0; row < ship.size; ++row) {
-          if (!this.isCellFree(new Position(start.row + row, start.col))) {
-            return false;
+          return true;
+      };
+      const placeShip = (start: Position, direction: Direction, ship: Ship) => {
+          if (direction === Direction.HORIZONTAL) {
+              let colLimit = start.col + ship.size;
+              for (let col = start.col; col < colLimit; ++col) {
+                  this.setCharAt(new Position(start.row, col), ship.char);
+              }
+          } else { // (direction === Direction.VERTICAL)
+              let rowLimit = start.row + ship.size;
+              for (let row = start.row; row < rowLimit; ++row) {
+                  this.setCharAt(new Position(row, start.col), ship.char);
+              }
           }
-        }
-      }
-      return true;
-    };
-    const placeShip = (start: Position, direction: Direction, ship: Ship) => {
-      if (direction === Direction.HORIZONTAL) {
-        for (let col = 0; col < ship.size; ++col) {
-          this.setCharAt(new Position(start.row, start.col + col), ship.char);
-        }
-      } else { // (direction === Direction.VERTICAL)
-        for (let row = 0; row < ship.size; ++row) {
-          this.setCharAt(new Position(start.row + row, start.col), ship.char);
-        }
-      }
-    };
+      };
 
     this.status = new GameStatus(BattleshipEngine.ships);
 
@@ -188,5 +190,13 @@ export class BattleshipEngine {
       }
       this.gameStatus.recordMiss();
     }
+  }
+
+  public cheat() {
+      for (var row = 0; row < this.numRows; ++row) {
+          for (var col = 0; col < this.numColumns; ++col) {
+              this.grid[row][col] = this.grid[row][col].toUpperCase();
+          }
+      }
   }
 }

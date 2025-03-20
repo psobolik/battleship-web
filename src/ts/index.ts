@@ -10,7 +10,7 @@ const g_fieldContainer = document.querySelector('#field-container') as HTMLEleme
 // Hide the notification div when it's done animating
 g_notifyElement.addEventListener('animationend', handleNotifyAnimationEnd);
 
-// Hide the "you win" div and reset the game when it is clicked
+// Hide the "you won" div and reset the game when it is clicked
 g_winElement.addEventListener('click', event => {
     handleWinElementClick(event)
 });
@@ -19,6 +19,12 @@ g_winElement.addEventListener('click', event => {
 g_fieldContainer.addEventListener('click', handleFieldClick);
 
 window.addEventListener('load', () => {
+    document.addEventListener("keyup", (e) => {
+        if (e.key === "Escape" && e.ctrlKey) {
+            g_battleshipEngine.cheat();
+            redraw();
+        }
+    });
     // Kick things off...
     reset();
 })
@@ -72,13 +78,11 @@ function handleFieldClick(event: MouseEvent) {
     const target = event.target as HTMLInputElement;
     if (target.type === 'button') {
         handleShot(Number(target.dataset.row), Number(target.dataset.col));
-        console.log(target);
     }
 }
 
 function showField() {
     function createTarget(row: number, col: number): HTMLElement {
-        // console.log(`${row},${col}: open`);
         const button = document.createElement('input') as HTMLInputElement;
         button.value = '⬜';
         button.style.gridColumn = (col + 1).toString();
@@ -149,7 +153,7 @@ function showStatus() {
         container.appendChild(label);
 
         const panel = document.createElement('span');
-        panel.style.gridColumn = "2";
+        panel.style.gridColumn = "2 / 4";
         panel.style.gridRow = row.toString();
         panel.classList.add('summary');
         panel.textContent = getStatusString(shipStatus);
